@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            tools:srcCompat="@tools:sample/avatars[2]"
+            android:id="@+id/pictureView_album"
+            android:layout_weight="1" android:scaleType="fitCenter"/>
+    <TextView
+            android:text="Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/descriptionView_album"
+            android:layout_weight="1"
+            android:textSize="15sp"
+            android:textColor="@color/design_default_color_primary" android:textAlignment="center"/>
+</LinearLayout>
