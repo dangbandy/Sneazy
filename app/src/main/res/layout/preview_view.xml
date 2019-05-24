@@ -20,37 +20,54 @@
             app:cardMaxElevation="2dp" android:layout_alignParentStart="true" android:layout_marginTop="0dp"
             android:layout_marginStart="0dp" android:layout_marginEnd="0dp" android:layout_marginBottom="0dp"
             android:layout_alignParentEnd="true" android:layout_alignParentTop="true">
+
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" android:layout_alignEnd="@+id/card_view">
 
+            <com.google.android.exoplayer2.ui.PlayerView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:id="@+id/mp4_preview"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/titleView_preview"
+                    app:controller_layout_id="@layout/mp4_preview_control">
+
+            </com.google.android.exoplayer2.ui.PlayerView>
             <ImageView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:id="@+id/imageView_preview"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+                    android:scaleType="center"
+                    app:layout_constraintDimensionRatio="16:12" android:adjustViewBounds="true"
+                    app:layout_constraintTop_toTopOf="@+id/mp4_preview"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintDimensionRatio="16:12"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/titleView_preview"/>
+
+
             <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/titleView_preview"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/background_dark"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView_preview"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp" app:layout_constraintBottom_toTopOf="@+id/prev_desc"
+            />
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/titleView_preview"
-                    app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-            >
+                    android:id="@+id/prev_desc"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp">
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent" app:srcCompat="@android:drawable/stat_sys_upload_done"

@@ -1,6 +1,7 @@
 package dang.sneazy.Models
 
-import androidx.appcompat.widget.DialogTitle
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.SimpleExoPlayer
 import java.io.Serializable
 
 class Album (
@@ -10,8 +11,10 @@ class Album (
     val title: String,
     val link: String,
     val type: String,
+    val mp4: String,
     val description: String,
     val images: List<Picture>,
     val ups: Int,
     val downs: Int) : Serializable {
+
 }

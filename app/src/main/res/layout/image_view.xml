@@ -1,24 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
-    <ImageView
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            tools:srcCompat="@tools:sample/avatars[2]"
-            android:id="@+id/pictureView_album"
-            android:layout_weight="1" android:scaleType="fitCenter"/>
-    <TextView
-            android:text="Description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/descriptionView_album"
-            android:layout_weight="1"
-            android:textSize="15sp"
-            android:textColor="@color/design_default_color_primary" android:textAlignment="center"/>
-</LinearLayout>
+            android:layout_height="wrap_content">
+        <com.google.android.exoplayer2.ui.PlayerView
+                android:layout_width="407dp"
+                android:layout_height="488dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/mp4View"
+                app:controller_layout_id="@layout/mp4_preview_control"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintBottom_toTopOf="@+id/descriptionView_album"
+                app:layout_constraintVertical_bias="0.0">
+        </com.google.android.exoplayer2.ui.PlayerView>
+
+        <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:id="@+id/pictureView_album"
+                android:layout_weight="1" android:scaleType="fitCenter"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintBottom_toTopOf="@+id/descriptionView_album"/>
+        <TextView
+                android:text="Description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/descriptionView_album"
+                android:layout_weight="1"
+                android:textSize="15sp"
+                android:textColor="@color/design_default_color_primary" android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</RelativeLayout>
