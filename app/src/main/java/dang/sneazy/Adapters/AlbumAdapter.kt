@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -48,34 +49,46 @@ class AlbumAdapter(val album: Album): RecyclerView.Adapter<AlbumViewHolder>() {
             if (album.images[position].type == "image/jpeg" || album.images[position].type == "image/png" ) {
                 Picasso.get().load(album.images[position].link).into(holder.view.pictureView_album)
             }else{
-                val mGifvView = holder.view.mp4View
-                val mPlayer = ExoPlayerFactory.newSimpleInstance(holder.view.context, DefaultTrackSelector(),
-                    DefaultLoadControl()
-                )
-                mPlayer.playWhenReady = false
-                mGifvView.player = mPlayer
+                if(album.images[position].mp4 == null){
+                    Glide.with(holder.view).asGif().load(album.images[position].link).into(holder.view.pictureView_album)
+                }
+                else{
+                    val mGifvView = holder.view.mp4View
+                    val mPlayer = ExoPlayerFactory.newSimpleInstance(holder.view.context, DefaultTrackSelector(),
+                        DefaultLoadControl()
+                    )
+                    mPlayer.playWhenReady = false
+                    mGifvView.player = mPlayer
 
-                val uri = Uri.parse(album.images[position].mp4)
-                val dataSourceFactory = DefaultDataSourceFactory(holder.view.context, Util.getUserAgent(holder.view.context, "Sneazy"), null)
+                    val uri = Uri.parse(album.images[position].mp4)
+                    val dataSourceFactory = DefaultDataSourceFactory(holder.view.context, Util.getUserAgent(holder.view.context, "Sneazy"), null)
 
-                val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
-                mPlayer.prepare(videoSource)
+                    val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+                    mPlayer.prepare(videoSource)
+                }
+
             }
         }else {
             holder.view.descriptionView_album.text =  album.description
             if (album.animated) {
-                val mGifvView = holder.view.mp4View
-                val mPlayer = ExoPlayerFactory.newSimpleInstance(holder.view.context, DefaultTrackSelector(),
-                    DefaultLoadControl()
-                )
-                mPlayer.playWhenReady = false
-                mGifvView.player = mPlayer
+                if(album.mp4 == null){
+                    Glide.with(holder.view).asGif().load(album.link).into(holder.view.pictureView_album)
+                }
+                else{
+                    val mGifvView = holder.view.mp4View
+                    val mPlayer = ExoPlayerFactory.newSimpleInstance(holder.view.context, DefaultTrackSelector(),
+                        DefaultLoadControl()
+                    )
+                    mPlayer.playWhenReady = false
+                    mGifvView.player = mPlayer
 
-                val uri = Uri.parse(album.mp4)
-                val dataSourceFactory = DefaultDataSourceFactory(holder.view.context, Util.getUserAgent(holder.view.context, "Sneazy"), null)
+                    val uri = Uri.parse(album.mp4)
+                    val dataSourceFactory = DefaultDataSourceFactory(holder.view.context, Util.getUserAgent(holder.view.context, "Sneazy"), null)
 
-                val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
-                mPlayer.prepare(videoSource)
+                    val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+                    mPlayer.prepare(videoSource)
+                }
+
             }else{
                 Picasso.get().load(album.link).into(holder.view.pictureView_album)
             }

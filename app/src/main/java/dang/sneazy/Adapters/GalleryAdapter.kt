@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -15,6 +16,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.squareup.picasso.Picasso
 import dang.sneazy.Activities.AlbumActivity
+import dang.sneazy.Models.Album
 import dang.sneazy.Models.Gallery
 import dang.sneazy.R
 import kotlinx.android.synthetic.main.preview_view.view.*
@@ -22,10 +24,11 @@ import kotlinx.android.synthetic.main.preview_view.view.*
 
 
 
-class MainAdapter(val gallery: Gallery): RecyclerView.Adapter<MainAdapter.GalleryViewHolder>() {
+class MainAdapter(gallery: Gallery): RecyclerView.Adapter<MainAdapter.GalleryViewHolder>() {
     //number of items
+    var mGallery = gallery
     override fun getItemCount(): Int {
-        return gallery.data.count()
+        return mGallery.data.count()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryViewHolder {
@@ -45,7 +48,7 @@ class MainAdapter(val gallery: Gallery): RecyclerView.Adapter<MainAdapter.Galler
     }
 
     override fun onBindViewHolder(holder: GalleryViewHolder, position: Int) {
-        val currentAlbumData = gallery.data[position]
+        val currentAlbumData = mGallery.data[position]
         val currentAlbumView = holder.view
 
         currentAlbumView.imageView_preview.setImageResource(0)
@@ -56,6 +59,10 @@ class MainAdapter(val gallery: Gallery): RecyclerView.Adapter<MainAdapter.Galler
 
         if(!currentAlbumData.is_album){
             if (currentAlbumData.animated){
+                if(currentAlbumData.mp4 == null){
+                    Picasso.get().load(currentAlbumData.link).into(currentAlbumView.imageView_preview)
+                }
+                else{
                     val mGifvView = currentAlbumView.mp4_preview
                     val mPlayer = ExoPlayerFactory.newSimpleInstance(holder.view.context, DefaultTrackSelector(),
                         DefaultLoadControl())
@@ -68,6 +75,8 @@ class MainAdapter(val gallery: Gallery): RecyclerView.Adapter<MainAdapter.Galler
 
                     val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
                     mPlayer.prepare(videoSource)
+                }
+
             }else{
                 Picasso.get().load(currentAlbumData.link).into(currentAlbumView.imageView_preview)
             }
@@ -77,24 +86,28 @@ class MainAdapter(val gallery: Gallery): RecyclerView.Adapter<MainAdapter.Galler
                 Picasso.get().load(currentAlbumData.images[0].link).into(currentAlbumView.imageView_preview)
             }else {
                 //is gif or gifv
+                if(currentAlbumData.images[0].mp4 == null){
+                    Glide.with(currentAlbumView).asGif().load(currentAlbumData.link).into(currentAlbumView.imageView_preview)
+                }
+                else{
+                    val mGifvView = currentAlbumView.mp4_preview
+                    val mPlayer = ExoPlayerFactory.newSimpleInstance(
+                        holder.view.context, DefaultTrackSelector(),
+                        DefaultLoadControl()
+                    )
+                    mPlayer.playWhenReady = false
+                    mPlayer.volume = 0.0F
+                    mGifvView.player = mPlayer
 
-                val mGifvView = currentAlbumView.mp4_preview
-                val mPlayer = ExoPlayerFactory.newSimpleInstance(
-                    holder.view.context, DefaultTrackSelector(),
-                    DefaultLoadControl()
-                )
-                mPlayer.playWhenReady = false
-                mPlayer.volume = 0.0F
-                mGifvView.player = mPlayer
-
-                val uri = Uri.parse(currentAlbumData.images[0].mp4)
-                val dataSourceFactory = DefaultDataSourceFactory(
-                    holder.view.context,
-                    Util.getUserAgent(holder.view.context, "Sneazy"),
-                    null
-                )
-                val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
-                mPlayer.prepare(videoSource)
+                    val uri = Uri.parse(currentAlbumData.images[0].mp4)
+                    val dataSourceFactory = DefaultDataSourceFactory(
+                        holder.view.context,
+                        Util.getUserAgent(holder.view.context, "Sneazy"),
+                        null
+                    )
+                    val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+                    mPlayer.prepare(videoSource)
+                }
             }
         }
         currentAlbumView.setOnClickListener {
@@ -105,6 +118,12 @@ class MainAdapter(val gallery: Gallery): RecyclerView.Adapter<MainAdapter.Galler
         }
     }
 
+    fun addData(newGallery: Gallery) {
+        val jointAlbum = ArrayList<Album>()
+        jointAlbum.addAll(mGallery.data)
+        jointAlbum.addAll(newGallery.data)
+        mGallery = Gallery(jointAlbum)
+    }
 
     class GalleryViewHolder(val view: View): RecyclerView.ViewHolder(view){}
 }

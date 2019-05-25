@@ -6,12 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.gson.GsonBuilder
 import dang.sneazy.Adapters.MainAdapter
+import dang.sneazy.Models.Album
 import dang.sneazy.Models.Gallery
 
 import dang.sneazy.R
@@ -30,10 +32,13 @@ private const val ARG_PARAM2 = "param2"
  */
 class HomeFragment : Fragment() {
 
+    private var currentAdapter = MainAdapter(Gallery(ArrayList<Album>()))
+    private var page = 0
+
     private fun fetchJson() {
         println("Attempting to fetch JSON")
 
-        val baseURL = "https://api.imgur.com/3/gallery/hot/time/month/1?showViral=true&mature=true&album_previews=true"
+        val baseURL = "https://api.imgur.com/3/gallery/hot/time/month/0?showViral=true&mature=true&album_previews=true"
         val request = Request.Builder().url(baseURL)
             .addHeader("Authorization","Client-ID a42d18df437ba18")
             .build()
@@ -44,12 +49,30 @@ class HomeFragment : Fragment() {
 
                 val gson = GsonBuilder().create()
                 val gallery = gson.fromJson(body,Gallery::class.java)
-
+                currentAdapter = MainAdapter(gallery)
                 activity?.runOnUiThread {
-                    recyclerView_main.adapter = MainAdapter(gallery)
+                    recyclerView_main.adapter = currentAdapter
                 }
 
-                println(body)
+            }
+            override fun onFailure(call: Call, e: IOException) {
+                println("failed to execute request")
+            }
+        })
+    }
+
+    fun getNextData(page: Int){
+        val baseURL = "https://api.imgur.com/3/gallery/hot/time/month/" + page + "?showViral=true&mature=true&album_previews=true"
+        val request = Request.Builder().url(baseURL)
+            .addHeader("Authorization","Client-ID a42d18df437ba18")
+            .build()
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body()?.string()
+                val gson = GsonBuilder().create()
+                val nextGal = gson.fromJson(body,Gallery::class.java)
+                currentAdapter.addData(nextGal)
             }
             override fun onFailure(call: Call, e: IOException) {
                 println("failed to execute request")
@@ -69,7 +92,33 @@ class HomeFragment : Fragment() {
             (activity as AppCompatActivity).setSupportActionBar(toolbar)
         }
         val recyclerView_main = rootView.findViewById(R.id.recyclerView_main) as RecyclerView // Add this
-        recyclerView_main.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        recyclerView_main.layoutManager = layoutManager
+
+        recyclerView_main.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null)
+                var pastVisibleItems = 0
+
+                if (firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
+                    pastVisibleItems = firstVisibleItems[0]
+                }
+
+                if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                    Toast.makeText(activity, "Got next stuff", Toast.LENGTH_SHORT).show()
+                    page += 1
+                    getNextData(page)
+                    println(currentAdapter)
+                }
+            }
+        })
 
         return rootView
     }

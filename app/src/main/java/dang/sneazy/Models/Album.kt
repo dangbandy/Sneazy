@@ -13,7 +13,7 @@ class Album (
     val type: String,
     val mp4: String,
     val description: String,
-    val images: List<Picture>,
+    val images: ArrayList<Picture>,
     val ups: Int,
     val downs: Int) : Serializable {
 
