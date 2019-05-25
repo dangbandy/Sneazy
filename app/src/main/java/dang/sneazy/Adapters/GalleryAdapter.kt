@@ -1,18 +1,14 @@
 package dang.sneazy.Adapters
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.DefaultLoadControl
-import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -36,9 +32,6 @@ class MainAdapter(val gallery: Gallery): RecyclerView.Adapter<MainAdapter.Galler
         //how to create a view?
         val layoutInflater = LayoutInflater.from(parent.context)
         val cellForRow = layoutInflater.inflate(R.layout.preview_view, parent, false)
-
-
-
         return GalleryViewHolder(cellForRow)
 
     }
@@ -61,7 +54,6 @@ class MainAdapter(val gallery: Gallery): RecyclerView.Adapter<MainAdapter.Galler
         currentAlbumView.upCount_preview.text = currentAlbumData.ups.toString()
         currentAlbumView.downCount_preview.text = currentAlbumData.downs.toString()
 
-        //There is an issue with playing mp4/gifv
         if(!currentAlbumData.is_album){
             if (currentAlbumData.animated){
                     val mGifvView = currentAlbumView.mp4_preview
@@ -75,9 +67,7 @@ class MainAdapter(val gallery: Gallery): RecyclerView.Adapter<MainAdapter.Galler
                     val dataSourceFactory = DefaultDataSourceFactory(holder.view.context, Util.getUserAgent(holder.view.context, "Sneazy"), null)
 
                     val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
-                    //val videoSource = ExtractorMediaSource(uri, dataSourceFactory, extractorsFactory, null, null)
                     mPlayer.prepare(videoSource)
-//                    player = mPlayer
             }else{
                 Picasso.get().load(currentAlbumData.link).into(currentAlbumView.imageView_preview)
             }
@@ -103,25 +93,19 @@ class MainAdapter(val gallery: Gallery): RecyclerView.Adapter<MainAdapter.Galler
                     Util.getUserAgent(holder.view.context, "Sneazy"),
                     null
                 )
-                val extractorsFactory = DefaultExtractorsFactory()
-
                 val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
-                //val videoSource = ExtractorMediaSource(uri, dataSourceFactory, extractorsFactory, null, null)
                 mPlayer.prepare(videoSource)
-//                player = mPlayer
             }
-
-            currentAlbumView.setOnClickListener {
-                val intent = Intent(holder.view.context, AlbumActivity::class.java)
-                intent.putExtra("CHOSEN_ALBUM", currentAlbumData )
-                holder.view.context.startActivity(intent)
-            }
-            //playerList.add(player)
+        }
+        currentAlbumView.setOnClickListener {
+            Toast.makeText(holder.view.context, "Item Clicked", Toast.LENGTH_SHORT).show()
+            val intent = Intent(holder.view.context, AlbumActivity::class.java)
+            intent.putExtra("CHOSEN_ALBUM", currentAlbumData )
+            holder.view.context.startActivity(intent)
         }
     }
 
 
-    class GalleryViewHolder(val view: View): RecyclerView.ViewHolder(view){
-    }
+    class GalleryViewHolder(val view: View): RecyclerView.ViewHolder(view){}
 }
 

@@ -1,6 +1,7 @@
 package dang.sneazy.Activities
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,9 +23,21 @@ class AlbumActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         picturesRV.layoutManager = LinearLayoutManager(this)
         picturesRV.adapter = AlbumAdapter(albumInfo)
 
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        picturesRV.adapter!!.notifyDataSetChanged()
+        Toast.makeText(this, "Back Clicked", Toast.LENGTH_SHORT).show()
     }
 }

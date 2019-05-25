@@ -15,7 +15,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:id="@+id/mp4View"
-                app:controller_layout_id="@layout/mp4_preview_control"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintBottom_toTopOf="@+id/descriptionView_album"
                 app:layout_constraintVertical_bias="0.0">

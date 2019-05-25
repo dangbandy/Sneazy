@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -18,6 +17,7 @@ import dang.sneazy.R
 import kotlinx.android.synthetic.main.image_view.view.*
 
 class AlbumAdapter(val album: Album): RecyclerView.Adapter<AlbumViewHolder>() {
+
     override fun getItemCount(): Int {
         if(album.is_album)
             return album.images.count()
@@ -43,8 +43,9 @@ class AlbumAdapter(val album: Album): RecyclerView.Adapter<AlbumViewHolder>() {
 
         if(album.is_album ){
             holder.view.descriptionView_album.text =  album.images[position].description
+            holder.view.pictureView_album.setImageResource(0)
+
             if (album.images[position].type == "image/jpeg" || album.images[position].type == "image/png" ) {
-                //Picasso.get().load(currentAlbumData.images[0].link).into(currentAlbumView.imageView_preview)
                 Picasso.get().load(album.images[position].link).into(holder.view.pictureView_album)
             }else{
                 val mGifvView = holder.view.mp4View
@@ -58,9 +59,7 @@ class AlbumAdapter(val album: Album): RecyclerView.Adapter<AlbumViewHolder>() {
                 val dataSourceFactory = DefaultDataSourceFactory(holder.view.context, Util.getUserAgent(holder.view.context, "Sneazy"), null)
 
                 val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
-                //val videoSource = ExtractorMediaSource(uri, dataSourceFactory, extractorsFactory, null, null)
                 mPlayer.prepare(videoSource)
-//                //player = mPlayer
             }
         }else {
             holder.view.descriptionView_album.text =  album.description
@@ -76,12 +75,9 @@ class AlbumAdapter(val album: Album): RecyclerView.Adapter<AlbumViewHolder>() {
                 val dataSourceFactory = DefaultDataSourceFactory(holder.view.context, Util.getUserAgent(holder.view.context, "Sneazy"), null)
 
                 val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
-                //val videoSource = ExtractorMediaSource(uri, dataSourceFactory, extractorsFactory, null, null)
                 mPlayer.prepare(videoSource)
-
             }else{
                 Picasso.get().load(album.link).into(holder.view.pictureView_album)
-
             }
         }
 
