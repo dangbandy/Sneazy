@@ -1,7 +1,5 @@
 package dang.sneazy.Models
 
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.SimpleExoPlayer
 import java.io.Serializable
 
 class Album (
@@ -14,7 +12,14 @@ class Album (
     val mp4: String,
     val description: String,
     val images: ArrayList<Picture>,
+    val comment_count: Int,
     val ups: Int,
     val downs: Int) : Serializable {
+
+    private var commentContainer = CommentContainer(ArrayList<Comment>())
+
+    fun setCommentContainer(newCommentContainer: CommentContainer){
+        commentContainer = newCommentContainer
+    }
 
 }
